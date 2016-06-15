@@ -170,6 +170,21 @@
 	cursor: pointer;
 	color: #0b93e3;
 }
+#bugs {
+	width: 60%;
+	margin-left: 20%;
+	margin-right: 20%;
+	margin-top: 12px;
+}
+#bugs span {
+	font-size: 12px;
+	background-color: rgb(244, 64, 117);
+	padding: 4px 8px;
+	border-radius: 4px;
+	margin: 5px;
+	color: white;
+	display: inline-block;
+}
 </style>
 <div id="search">
 	<input type="text" class="form-control">
@@ -272,9 +287,10 @@
 		</div>
 	</div>
 	<div id="bug">
-		<textarea name="bug" class="form-control" placeholder="描述你认为提取有误的内容" rows='3'></textarea>
+		<textarea name="bug" class="form-control" placeholder="一起来补充空缺或有误的字段，请使用以下格式：字段名@字段值，例如：律师费@5000元" rows='3'></textarea>
 		<p>提交成功</p>
 		<span>提交 <span class="fa fa-fw fa-paper-plane-o"></span></span>
+		<div id="bugs"></div>
 	</div>
 </div>
 <script>
@@ -376,8 +392,6 @@ $(document).ready(function() {
 			else if (source == 1) {
 				tmp = paper;
 			}
-
-			console.log(tmp);
 
 			fill_in_content(tmp);
 		})
@@ -773,6 +787,7 @@ $(document).ready(function() {
 	});
 
 	$('#bug>span').click(function(event) {
+		$('#bugs').append('<span>' + $('#bug textarea').val() + '</span>');
 		$.ajax({
 			url: '{:U("Case/note")}',
 			type: 'POST',
@@ -791,6 +806,7 @@ $(document).ready(function() {
 			},
 		})
 		.done(function(data) {
+			$('#bug textarea').val('');
 		})
 		.fail(function() {
 		})
