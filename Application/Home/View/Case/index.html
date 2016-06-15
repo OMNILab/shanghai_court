@@ -1,0 +1,809 @@
+<style>
+#search {
+	position: relative;
+	width: 500px;
+	max-width: 100%;
+}
+#search input {
+	width: 500px;
+	max-width: 100%;
+	padding: 8px 12px;
+    color: #f2f2f2;
+    background-color: #44464F;
+    border-color: #44464F;
+    box-shadow: none;
+}
+#search input.active {
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+}
+#search #results {
+	position: absolute;
+	top: 34px;
+	width: 100%;
+    z-index: 999;
+}
+#search #results .cell {
+	padding: 8px;
+	padding-left: 12px;
+	color: rgb(90, 103, 121);
+	background-color: #fff;
+    font-size: 12px;
+    z-index: 999;
+}
+#search #results .cell:nth-of-type(2n) {
+	background-color: rgb(250, 251, 253);
+}
+#search #results .cell:nth-of-type(2n + 1) {
+	background-color: rgb(255, 255, 255);
+}
+#search #results .cell:last-child {
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+}
+#search #random {
+    padding: 5px 10px;
+    color: #f2f2f2;
+    background-color: #0b93e3;
+    box-shadow: none;
+    font-size: 18px;
+    position: absolute;
+    top: 0;
+    right: -120px;
+}
+#content {
+	margin-top: 20px;
+	display: none;
+}
+#content h5.title {
+    color: #5A6779;
+    border-left: 4px solid #0b93e3;
+    padding-left: 10px;
+    font-size: 16px;
+}
+#content #source span {
+	padding: 6px 8px;
+	color: #666;
+	border: 1px solid #666;
+	border-radius: 3px;
+	font-size: 12px;
+	margin-right: 6px;
+	transition: color, background-color .4s;
+    -o-transition: color, background-color .4s;
+    -ms-transition: color, background-color .4s;
+    -moz-transition: color, background-color .4s;
+    -webkit-transition: color, background-color .4s;
+}
+#content #source span:hover, #content #source span.active {
+	cursor: pointer;
+	border-color: rgb(244, 64, 117);
+	background-color: rgb(244, 64, 117);
+	color: #fff;
+}
+
+#content #yuanwen div {
+	margin-top: 10px;
+	height: 300px;
+	overflow-y: scroll;
+	border: 1px solid #B4B5BB;
+    border-radius: 5px;
+    padding: 10px 15px;
+}
+#content #yuanwen div p {
+	font-size: 12px;
+	color: #888;
+	margin-bottom: 0;
+}
+#content #basic-info, #content #main-reparation, #content #other-reparation, #content #total-reparation {
+	background-color: #30323C;
+    padding: 30px;
+    padding-bottom: 20px;
+    border-radius: 5px;
+    margin-bottom: 30px;
+}
+#content #basic-info p, #content #main-reparation p,  #content #other-reparation p,  #content #total-reparation p {
+	display: inline-block;
+	margin-right: 15px;
+	border-bottom: 1px solid #888;
+	padding-bottom: 2px;
+}
+#content #basic-info p span, #content #main-reparation p span,  #content #other-reparation p span,  #content #total-reparation p span {
+	color: rgb(244, 64, 117);
+}
+
+#content #humans table {
+	font-size: 12px;
+	margin-top: 10px;
+	margin-bottom: 20px;
+}
+
+#content #humans table th {
+	font-weight: lighter;
+	font-size: 13px;
+}
+
+#plot1 {
+	width: 100%;
+	height: 250px;
+}
+
+#plot1, #plot2 {
+	width: 100%;
+	height: 250px;
+}
+
+#bug {
+	text-align: center;
+	margin-top: 30px;
+}
+#bug textarea[name="bug"] {
+	width: 500px;
+	max-width: 100%;
+	padding: 8px 12px;
+    color: #f2f2f2;
+    background-color: #44464F;
+    border-color: #44464F;
+    box-shadow: none;
+    margin: 0 auto;
+    resize: none;
+}
+#bug textarea[name="bug"]:focus {
+    border-color: #44464F;
+    box-shadow: none;
+}
+#bug p {
+	font-size: 12px;
+	color: rgb(244, 64, 117);
+	margin-top: 15px;
+	margin-bottom: 5px;
+	opacity: 0;
+}
+#bug>span {
+	color: #5A6779;
+	transition: color .4s;
+    -o-transition: color .4s;
+    -ms-transition: color .4s;
+    -moz-transition: color .4s;
+    -webkit-transition: color .4s;
+}
+#bug>span:hover {
+	cursor: pointer;
+	color: #0b93e3;
+}
+</style>
+<div id="search">
+	<input type="text" class="form-control">
+	<!-- <span class="btn" id="random"><span class="fa fa-fw fa-random"></span></span> -->
+	<div id="results"></div>
+</div>
+<div id="content">
+	<div id="source">
+		<span>庭审笔录</span>
+		<span>法律文书</span>
+	</div>
+	<div class="row" style="margin-top:20px;">
+		<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+			<div id="yuanwen" style="margin-bottom:20px;">
+				<h5 class="title">原文<span id="case-type" style="margin-left:12px;font-size:13px;color:#888;"></span></h5>
+				<div></div>
+			</div>
+    	</div>
+    	<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+    		<div id="basic-info" style="margin-bottom:20px;">
+				<h5 class="title" style="color:white;margin-top:0;margin-bottom:15px;">案件信息</h5>
+    			<p style="font-size:12px;color:#ddd" name="事发地">事发地<span style="margin-left:6px;"></span></p>
+    			<p style="font-size:12px;color:#ddd" name="事故分类">事故分类<span style="margin-left:6px;"></span></p>
+    			<p style="font-size:12px;color:#ddd" name="伤残等级">伤残等级<span style="margin-left:6px;"></span></p>
+    			<p style="font-size:12px;color:#ddd" name="车型">车型<span style="margin-left:6px;"></span></p>
+    			<p style="font-size:12px;color:#ddd" name="车牌">车牌<span style="margin-left:6px;"></span></p>
+
+    			<p style="font-size:12px;color:#ddd" name="户籍性质">户籍性质<span style="margin-left:6px;"></span></p>
+    			<p style="font-size:12px;color:#ddd" name="是否适用城镇标准">是否适用城镇标准<span style="margin-left:6px;"></span></p>
+    			<p style="font-size:12px;color:#ddd" name="当事人责任比例">当事人责任比例<span style="margin-left:6px;"></span></p>
+
+    			<p style="font-size:12px;color:#ddd" name="是否购买交强险">是否购买交强险<span style="margin-left:6px;"></span></p>
+    			<p style="font-size:12px;color:#ddd" name="是否购买商业险">是否购买商业险<span style="margin-left:6px;"></span></p>
+    			<p style="font-size:12px;color:#ddd" name="是否购买不计免赔">是否购买不计免赔<span style="margin-left:6px;"></span></p>
+    			<p style="font-size:12px;color:#ddd" name="商业险限额">商业险限额<span style="margin-left:6px;"></span></p>
+    			<p style="font-size:12px;color:#ddd" name="使用交强险比例">使用交强险比例<span style="margin-left:6px;"></span></p>
+    			<p style="font-size:12px;color:#ddd" name="商业险是否免赔">商业险是否免赔<span style="margin-left:6px;"></span></p>
+			</div>
+    	</div>
+	</div>	
+	<div id="humans">
+		<h5 class="title">人员信息</h5>
+		<table class="table table-striped table-hover">
+		</table>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+			<div id="main-reparation">
+				<div id="dead">
+					<h5 class="title" style="color:white;margin-top:0;margin-bottom:15px;">死亡赔偿项目</h5>
+    				<p style="font-size:12px;color:#ddd" name="医疗费">医疗费<span style="margin-left:6px;"></span></p>
+    				<p style="font-size:12px;color:#ddd" name="住院伙食补助费">住院伙食补助费<span style="margin-left:6px;"></span><span style="margin-left:6px;"></span><span style="margin-left:6px;"></span></p>
+    				<p style="font-size:12px;color:#ddd" name="丧葬费">丧葬费<span style="margin-left:6px;"></span><span style="margin-left:6px;"></span><span style="margin-left:6px;"></span></p>
+    				<p style="font-size:12px;color:#ddd" name="死亡赔偿金">死亡赔偿金<span style="margin-left:6px;"></span><span style="margin-left:6px;"></span><span style="margin-left:6px;"></span></p>
+    				<p style="font-size:12px;color:#ddd" name="交通费">交通费<span style="margin-left:6px;"></span></p>
+    				<p style="font-size:12px;color:#ddd" name="住宿费">住宿费<span style="margin-left:6px;"></span><span style="margin-left:6px;"></span><span style="margin-left:6px;"></span><span style="margin-left:6px;"></span></p>
+    				<p style="font-size:12px;color:#ddd" name="误工费">误工费<span style="margin-left:6px;"></span><span style="margin-left:6px;"></span><span style="margin-left:6px;"></span><span style="margin-left:6px;"></span></p>
+    				<p style="font-size:12px;color:#ddd" name="被抚养人生活费">被抚养人生活费<span style="margin-left:6px;"></span><span style="margin-left:6px;"></span><span style="margin-left:6px;"></span><span style="margin-left:6px;"></span></p>
+    				<p style="font-size:12px;color:#ddd" name="精神损害抚慰金">精神损害抚慰金<span style="margin-left:6px;"></span></p>
+				</div>
+				<div id="injured">
+					<h5 class="title" style="color:white;margin-top:0;margin-bottom:15px;">伤残赔偿项目</h5>
+    				<p style="font-size:12px;color:#ddd" name="医药费">医药费<span style="margin-left:6px;"></span></p>
+    				<p style="font-size:12px;color:#ddd" name="住院伙食补助费">住院伙食补助费<span style="margin-left:6px;"></span><span style="margin-left:6px;"></span><span style="margin-left:6px;"></span></p>
+    				<p style="font-size:12px;color:#ddd" name="营养费">营养费<span style="margin-left:6px;"></span><span style="margin-left:6px;"></span><span style="margin-left:6px;"></span></p>
+    				<p style="font-size:12px;color:#ddd" name="护理费">护理费<span style="margin-left:6px;"></span><span style="margin-left:6px;"></span><span style="margin-left:6px;"></span></p>
+    				<p style="font-size:12px;color:#ddd" name="误工费">误工费<span style="margin-left:6px;"></span><span style="margin-left:6px;"></span><span style="margin-left:6px;"></span><span style="margin-left:6px;"></span></p>
+    				<p style="font-size:12px;color:#ddd" name="交通费">交通费<span style="margin-left:6px;"></span></p>
+    				<p style="font-size:12px;color:#ddd" name="伤残赔偿金">伤残赔偿金<span style="margin-left:6px;"></span></p>
+    				<p style="font-size:12px;color:#ddd" name="残疾辅助器具">残疾辅助器具<span style="margin-left:6px;"></span></p>
+    				<p style="font-size:12px;color:#ddd" name="精神损害抚慰金">精神损害抚慰金<span style="margin-left:6px;"></span></p>
+				</div>
+			</div>
+		</div>
+		<div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+			<div id="other-reparation">
+				<h5 class="title" style="color:white;margin-top:0;margin-bottom:15px;">其他赔偿</h5>
+    			<p style="font-size:12px;color:#ddd" name="车损">车损<span style="margin-left:6px;"></span></p>
+    			<p style="font-size:12px;color:#ddd" name="物损">物损<span style="margin-left:6px;"></span></p>
+    			<p style="font-size:12px;color:#ddd" name="律师费">律师费<span style="margin-left:6px;"></span></p>
+    			<p style="font-size:12px;color:#ddd" name="鉴定费">鉴定费<span style="margin-left:6px;"></span></p>
+			</div>
+		</div>
+		<div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+			<div id="total-reparation">
+				<h5 class="title" style="color:white;margin-top:0;margin-bottom:15px;">总金额及被告赔偿金额</h5>
+    			<p style="font-size:12px;color:#ddd" name="交强险保险公司">交强险保险公司<span style="margin-left:6px;"></span></p>
+    			<p style="font-size:12px;color:#ddd" name="商业险保险公司">商业险保险公司<span style="margin-left:6px;"></span></p>
+    			<p style="font-size:12px;color:#ddd" name="其他被告">被告<span style="margin-left:6px;"></span></p>
+    			<p style="font-size:12px;color:#ddd" name="损失总金额">损失总金额<span style="margin-left:6px;"></span></p>
+			</div>
+		</div>
+	</div>
+	<div class="row" style="margin-top:20px;">
+		<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+			<div id="plot1"></div>
+		</div>
+		<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+			<div id="plot2"></div>
+		</div>
+	</div>
+	<div id="bug">
+		<textarea name="bug" class="form-control" placeholder="描述你认为提取有误的内容" rows='3'></textarea>
+		<p>提交成功</p>
+		<span>提交 <span class="fa fa-fw fa-paper-plane-o"></span></span>
+	</div>
+</div>
+<script>
+$(document).ready(function() {
+	$('#nav2').addClass('active');
+
+	var cases = '';
+	var record;
+	var paper;
+	var source = 0;
+
+
+	$.ajax({
+		url: '{:U("Case/data")}',
+		type: 'POST',
+		dataType: 'json',
+		data: {},
+	})
+	.done(function(data) {
+		cases = data['data'];
+	})
+	.fail(function() {
+	})
+	.always(function() {
+	});
+
+	$('#search input').keyup(function(event) {
+		var keyword = $(this).val();
+		var result = [];
+		if (keyword != '') {
+			keyword = keyword.split(' ');
+			for (var i = 0; i < cases.length; i++) {
+				var flag = true;
+				for (var j = 0; j < keyword.length; j++) {
+					if (cases[i]['title'].indexOf(keyword[j]) < 0) {
+						flag = false;
+						break;
+					}
+				}
+				if (flag) {
+					result.push(cases[i]);
+					if (result.length == 10) {
+						break;
+					}
+				}
+			}
+		}
+		if (result.length == 0) {
+			$(this).removeClass('active');
+		}
+		else {
+			$(this).addClass('active');
+		}
+
+		$('#results').empty().show();
+		for (var i = 0; i < result.length; i++) {
+			$('#results').append("<div class='cell' name='" + result[i]['title'] + "'>" + result[i]['title'] + "</div>");
+		}
+	});
+
+	$('#results').on('click', '.cell', function(event) {
+		var title = $(this).attr('name');
+		$('#search input').removeClass('active').val(title);
+		$('#results').hide();
+
+		$.ajax({
+			url: '{:U("Case/detail")}',
+			type: 'POST',
+			dataType: 'json',
+			data: {
+				title: title
+			},
+		})
+		.done(function(data) {
+			paper = data['paper'];
+			if (paper['id'] != '') {
+				$('#source span:last-child').show().addClass('active');
+				$('#source span:first-child').removeClass('active');
+				source = 1;
+			}
+			else {
+				$('#source span:last-child').hide();
+			}
+
+			record = data['record'];
+			if (record['id'] != '') {
+				$('#source span:first-child').show().addClass('active');
+				$('#source span:last-child').removeClass('active');
+				source = 0;
+			}
+			else {
+				$('#source span:first-child').hide();
+			}
+
+			var tmp;
+			if (source == 0) {
+				tmp = record;
+			}
+			else if (source == 1) {
+				tmp = paper;
+			}
+
+			console.log(tmp);
+
+			fill_in_content(tmp);
+		})
+		.fail(function() {
+		})
+		.always(function() {
+		});
+	});
+
+	function fill_in_content(content) {
+		$('#case-type').text(content['result']);
+		$('#yuanwen div').empty();
+		$('#yuanwen div').append('<p>' + content['content'] + '</p>');
+
+		$('#humans table tr').remove();
+		$('#humans table').append('<tr><th>角色</th><th>到庭</th><th>名称</th><th>性别</th><th>出生日期</th><th>民族</th><th>地址</th><th>职位</th></tr>');
+		for (var i = 0; i < content['graph']['基本信息']['原告'].length; i++) {
+			var tmp = content['graph']['基本信息']['原告'][i];
+			$('#humans table').append('<tr><td>原告</td><td>' + tmp['到庭'] + '</td><td>' + tmp['姓名'] + '</td><td>' + tmp['性别'] + '</td><td>' + tmp['出生日期'] + '</td><td>' + tmp['民族'] + '</td><td>' + tmp['地址'] + '</td><td>' + tmp['职位'] + '</td></tr>');
+		}
+		for (var i = 0; i < content['graph']['基本信息']['原告代理人'].length; i++) {
+			var tmp = content['graph']['基本信息']['原告代理人'][i];
+			$('#humans table').append('<tr><td>原代</td><td>' + tmp['到庭'] + '</td><td>' + tmp['姓名'] + '</td><td>' + tmp['性别'] + '</td><td>' + tmp['出生日期'] + '</td><td>' + tmp['民族'] + '</td><td>' + tmp['地址'] + '</td><td>' + tmp['职位'] + '</td></tr>');
+		}
+		for (var i = 0; i < content['graph']['基本信息']['被告'].length; i++) {
+			var tmp = content['graph']['基本信息']['被告'][i];
+			$('#humans table').append('<tr><td>被告</td><td>' + tmp['到庭'] + '</td><td>' + tmp['姓名'] + '</td><td>' + tmp['性别'] + '</td><td>' + tmp['出生日期'] + '</td><td>' + tmp['民族'] + '</td><td>' + tmp['地址'] + '</td><td>' + tmp['职位'] + '</td></tr>');
+		}
+		for (var i = 0; i < content['graph']['基本信息']['被告代理人'].length; i++) {
+			var tmp = content['graph']['基本信息']['被告代理人'][i];
+			$('#humans table').append('<tr><td>被代</td><td>' + tmp['到庭'] + '</td><td>' + tmp['姓名'] + '</td><td>' + tmp['性别'] + '</td><td>' + tmp['出生日期'] + '</td><td>' + tmp['民族'] + '</td><td>' + tmp['地址'] + '</td><td>' + tmp['职位'] + '</td></tr>');
+		}
+
+
+		$('p[name="事发地"] span').text(content['graph']['基本信息']['事发地']);
+		$('p[name="事故分类"] span').text(content['graph']['基本信息']['事故分类']);
+		$('p[name="伤残等级"] span').text(content['graph']['基本信息']['伤残等级']);
+		$('p[name="车型"] span').text(content['graph']['基本信息']['车型']);
+		$('p[name="车牌"] span').text(content['graph']['基本信息']['车牌']);
+		$('p[name="户籍性质"] span').text(content['graph']['基本信息']['户籍性质']);
+		$('p[name="是否适用城镇标准"] span').text(content['graph']['基本信息']['是否适用城镇标准']);
+		$('p[name="当事人责任比例"] span').text(content['graph']['基本信息']['当事人责任比例']);
+		$('p[name="是否购买交强险"] span').text(content['graph']['基本信息']['是否购买交强险']);
+		$('p[name="是否购买商业险"] span').text(content['graph']['基本信息']['是否购买商业险']);
+		$('p[name="是否购买不计免赔"] span').text(content['graph']['基本信息']['是否购买不计免赔']);
+		$('p[name="商业险限额"] span').text(content['graph']['基本信息']['商业险限额']);
+		$('p[name="使用交强险比例"] span').text(content['graph']['基本信息']['使用交强险比例']);
+		$('p[name="商业险是否免赔"] span').text(content['graph']['基本信息']['商业险是否免赔']);
+
+		if (content['graph']['死亡还是伤残'] == '死亡') {
+			$('#dead').show();
+			$('#injured').hide();
+
+			$('#dead p[name="医疗费"] span').text(content['graph']['死亡赔偿项目']['医疗费']);
+			
+			$('#dead p[name="住院伙食补助费"] span:nth-of-type(1)').text(content['graph']['死亡赔偿项目']['住院伙食补助费']['标准']);
+			$('#dead p[name="住院伙食补助费"] span:nth-of-type(2)').text(content['graph']['死亡赔偿项目']['住院伙食补助费']['时间']);
+			$('#dead p[name="住院伙食补助费"] span:nth-of-type(3)').text(content['graph']['死亡赔偿项目']['住院伙食补助费']['总额']);
+
+			$('#dead p[name="丧葬费"] span:nth-of-type(1)').text(content['graph']['死亡赔偿项目']['丧葬费']['标准']);
+			$('#dead p[name="丧葬费"] span:nth-of-type(2)').text(content['graph']['死亡赔偿项目']['丧葬费']['时间']);
+			$('#dead p[name="丧葬费"] span:nth-of-type(3)').text(content['graph']['死亡赔偿项目']['丧葬费']['总额']);
+
+			$('#dead p[name="死亡赔偿金"] span:nth-of-type(1)').text(content['graph']['死亡赔偿项目']['死亡赔偿金']['标准']);
+			$('#dead p[name="死亡赔偿金"] span:nth-of-type(2)').text(content['graph']['死亡赔偿项目']['死亡赔偿金']['时间']);
+			$('#dead p[name="死亡赔偿金"] span:nth-of-type(3)').text(content['graph']['死亡赔偿项目']['死亡赔偿金']['总额']);
+
+			$('#dead p[name="交通费"] span').text(content['graph']['死亡赔偿项目']['交通费']);
+
+			$('#dead p[name="住宿费"] span:nth-of-type(1)').text(content['graph']['死亡赔偿项目']['住宿费']['标准']);
+			$('#dead p[name="住宿费"] span:nth-of-type(2)').text(content['graph']['死亡赔偿项目']['住宿费']['人数']);
+			$('#dead p[name="住宿费"] span:nth-of-type(3)').text(content['graph']['死亡赔偿项目']['住宿费']['时间']);
+			$('#dead p[name="住宿费"] span:nth-of-type(4)').text(content['graph']['死亡赔偿项目']['住宿费']['总额']);
+
+			$('#dead p[name="误工费"] span:nth-of-type(1)').text(content['graph']['死亡赔偿项目']['误工费']['标准']);
+			$('#dead p[name="误工费"] span:nth-of-type(2)').text(content['graph']['死亡赔偿项目']['误工费']['人数']);
+			$('#dead p[name="误工费"] span:nth-of-type(3)').text(content['graph']['死亡赔偿项目']['误工费']['时间']);
+			$('#dead p[name="误工费"] span:nth-of-type(4)').text(content['graph']['死亡赔偿项目']['误工费']['总额']);
+
+			$('#dead p[name="被抚养人生活费"] span:nth-of-type(1)').text(content['graph']['死亡赔偿项目']['被抚养人生活费']['标准']);
+			$('#dead p[name="被抚养人生活费"] span:nth-of-type(2)').text(content['graph']['死亡赔偿项目']['被抚养人生活费']['人数']);
+			$('#dead p[name="被抚养人生活费"] span:nth-of-type(3)').text(content['graph']['死亡赔偿项目']['被抚养人生活费']['时间']);
+			$('#dead p[name="被抚养人生活费"] span:nth-of-type(4)').text(content['graph']['死亡赔偿项目']['被抚养人生活费']['总额']);
+
+			$('#dead p[name="精神损害抚慰金"] span').text(content['graph']['死亡赔偿项目']['精神损害抚慰金']);
+		}
+		else {
+			$('#dead').hide();
+			$('#injured').show();
+
+			$('#injured p[name="医药费"] span').text(content['graph']['伤残赔偿项目']['医药费']);
+
+			$('#injured p[name="住院伙食补助费"] span:nth-of-type(1)').text(content['graph']['伤残赔偿项目']['住院伙食补助费']['标准']);
+			$('#injured p[name="住院伙食补助费"] span:nth-of-type(2)').text(content['graph']['伤残赔偿项目']['住院伙食补助费']['时间']);
+			$('#injured p[name="住院伙食补助费"] span:nth-of-type(3)').text(content['graph']['伤残赔偿项目']['住院伙食补助费']['总额']);
+
+			$('#injured p[name="营养费"] span:nth-of-type(1)').text(content['graph']['伤残赔偿项目']['营养费']['标准']);
+			$('#injured p[name="营养费"] span:nth-of-type(2)').text(content['graph']['伤残赔偿项目']['营养费']['时间']);
+			$('#injured p[name="营养费"] span:nth-of-type(3)').text(content['graph']['伤残赔偿项目']['营养费']['总额']);
+
+			$('#injured p[name="护理费"] span:nth-of-type(1)').text(content['graph']['伤残赔偿项目']['护理费']['标准']);
+			$('#injured p[name="护理费"] span:nth-of-type(2)').text(content['graph']['伤残赔偿项目']['护理费']['时间']);
+			$('#injured p[name="护理费"] span:nth-of-type(3)').text(content['graph']['伤残赔偿项目']['护理费']['总额']);
+
+			$('#injured p[name="误工费"] span:nth-of-type(1)').text(content['graph']['伤残赔偿项目']['误工费']['标准']);
+			$('#injured p[name="误工费"] span:nth-of-type(2)').text(content['graph']['伤残赔偿项目']['误工费']['人数']);
+			$('#injured p[name="误工费"] span:nth-of-type(3)').text(content['graph']['伤残赔偿项目']['误工费']['时间']);
+			$('#injured p[name="误工费"] span:nth-of-type(4)').text(content['graph']['伤残赔偿项目']['误工费']['总额']);
+
+			$('#injured p[name="交通费"] span').text(content['graph']['伤残赔偿项目']['交通费']);
+			
+			$('#injured p[name="伤残赔偿金"] span').text(content['graph']['伤残赔偿项目']['伤残赔偿金']);
+			
+			$('#injured p[name="残疾辅助器具"] span').text(content['graph']['伤残赔偿项目']['残疾辅助器具']);
+			
+			$('#injured p[name="精神损害抚慰金"] span').text(content['graph']['伤残赔偿项目']['精神损害抚慰金']);
+		}
+
+		$('#other-reparation p[name="车损"] span').text(content['graph']['其它赔偿']['车损']);
+		$('#other-reparation p[name="物损"] span').text(content['graph']['其它赔偿']['物损']);
+		$('#other-reparation p[name="律师费"] span').text(content['graph']['其它赔偿']['律师费']);
+		$('#other-reparation p[name="鉴定费"] span').text(content['graph']['其它赔偿']['鉴定费']);
+
+		$('#total-reparation p[name="交强险保险公司"] span').text(content['graph']['总金额及被告赔偿金额']['交强险保险公司']);
+		$('#total-reparation p[name="商业险保险公司"] span').text(content['graph']['总金额及被告赔偿金额']['商业险保险公司']);
+		$('#total-reparation p[name="其他被告"] span').text(content['graph']['总金额及被告赔偿金额']['其他被告']);
+		$('#total-reparation p[name="损失总金额"] span').text(content['graph']['总金额及被告赔偿金额']['损失总金额']);
+
+		$('#content').show();
+		var h1 = $('#main-reparation').height();
+		var h2 = $('#other-reparation').height();
+		var h3 = $('#total-reparation').height();
+		if (h1 < h2) {
+			h1 = h2;
+		}
+		if (h1 < h3) {
+			h1 = h3;
+		}
+		$('#main-reparation').height(h1);
+		$('#other-reparation').height(h1);
+		$('#total-reparation').height(h1);
+
+		var reparations = [];
+		if (content['graph']['死亡还是伤残'] == '死亡') {
+			if (content['graph']['死亡赔偿项目']['医疗费'] != '') {
+				var tmp = content['graph']['死亡赔偿项目']['医疗费'].replace(',','');
+				reparations.push({
+	                value: parseFloat(tmp.substring(0, tmp.length - 1)),
+	                name: '医疗费'
+	            });
+			}
+			if (content['graph']['死亡赔偿项目']['住院伙食补助费']['总额'] != '0元') {
+				var tmp = content['graph']['死亡赔偿项目']['住院伙食补助费']['总额'].replace(',','');
+				reparations.push({
+	                value: parseFloat(tmp.substring(0, tmp.length - 1)),
+	                name: '住院伙食补助费'
+	            });
+			}
+			if (content['graph']['死亡赔偿项目']['丧葬费']['总额'] != '0元') {
+				var tmp = content['graph']['死亡赔偿项目']['丧葬费']['总额'].replace(',','');
+				reparations.push({
+	                value: parseFloat(tmp.substring(0, tmp.length - 1)),
+	                name: '丧葬费'
+	            });
+			}
+			if (content['graph']['死亡赔偿项目']['死亡赔偿金']['总额'] != '0元') {
+				var tmp = content['graph']['死亡赔偿项目']['死亡赔偿金']['总额'].replace(',','');
+				reparations.push({
+	                value: parseFloat(tmp.substring(0, tmp.length - 1)),
+	                name: '死亡赔偿金'
+	            });
+			}
+			if (content['graph']['死亡赔偿项目']['交通费'] != '') {
+				var tmp = content['graph']['死亡赔偿项目']['交通费'].replace(',','');
+				reparations.push({
+	                value: parseFloat(tmp.substring(0, tmp.length - 1)),
+	                name: '交通费'
+	            });
+			}
+			if (content['graph']['死亡赔偿项目']['住宿费']['总额'] != '0元') {
+				var tmp = content['graph']['死亡赔偿项目']['住宿费']['总额'].replace(',','');
+				reparations.push({
+	                value: parseFloat(tmp.substring(0, tmp.length - 1)),
+	                name: '住宿费'
+	            });
+			}
+			if (content['graph']['死亡赔偿项目']['误工费']['总额'] != '0元') {
+				var tmp = content['graph']['死亡赔偿项目']['误工费']['总额'].replace(',','');
+				reparations.push({
+	                value: parseFloat(tmp.substring(0, tmp.length - 1)),
+	                name: '误工费'
+	            });
+			}
+			if (content['graph']['死亡赔偿项目']['被抚养人生活费']['总额'] != '0元') {
+				var tmp = content['graph']['死亡赔偿项目']['被抚养人生活费']['总额'].replace(',','');
+				reparations.push({
+	                value: parseFloat(tmp.substring(0, tmp.length - 1)),
+	                name: '被抚养人生活费'
+	            });
+			}
+			if (content['graph']['死亡赔偿项目']['精神损害抚慰金'] != '') {
+				var tmp = content['graph']['死亡赔偿项目']['精神损害抚慰金'].replace(',','');
+				reparations.push({
+	                value: parseFloat(tmp.substring(0, tmp.length - 1)),
+	                name: '精神损害抚慰金'
+	            });
+			}
+		}
+		else {
+			if (content['graph']['伤残赔偿项目']['医药费'] != '') {
+				var tmp = content['graph']['伤残赔偿项目']['医药费'].replace(',','');
+				reparations.push({
+	                value: parseFloat(tmp.substring(0, tmp.length - 1)),
+	                name: '医药费'
+	            });
+			}
+			if (content['graph']['伤残赔偿项目']['住院伙食补助费']['总额'] != '0元') {
+				var tmp = content['graph']['伤残赔偿项目']['住院伙食补助费']['总额'].replace(',','');
+				reparations.push({
+	                value: parseFloat(tmp.substring(0, tmp.length - 1)),
+	                name: '住院伙食补助费'
+	            });
+			}
+			if (content['graph']['伤残赔偿项目']['营养费']['总额'] != '0元') {
+				var tmp = content['graph']['伤残赔偿项目']['营养费']['总额'].replace(',','');
+				reparations.push({
+	                value: parseFloat(tmp.substring(0, tmp.length - 1)),
+	                name: '营养费'
+	            });
+			}
+			if (content['graph']['伤残赔偿项目']['护理费']['总额'] != '0元') {
+				var tmp = content['graph']['伤残赔偿项目']['护理费']['总额'].replace(',','');
+				reparations.push({
+	                value: parseFloat(tmp.substring(0, tmp.length - 1)),
+	                name: '护理费'
+	            });
+			}
+			if (content['graph']['伤残赔偿项目']['误工费']['总额'] != '0元') {
+				var tmp = content['graph']['伤残赔偿项目']['误工费']['总额'].replace(',','');
+				reparations.push({
+	                value: parseFloat(tmp.substring(0, tmp.length - 1)),
+	                name: '误工费'
+	            });
+			}
+			if (content['graph']['伤残赔偿项目']['交通费'] != '') {
+				var tmp = content['graph']['伤残赔偿项目']['交通费'].replace(',','');
+				reparations.push({
+	                value: parseFloat(tmp.substring(0, tmp.length - 1)),
+	                name: '交通费'
+	            });
+			}
+			if (content['graph']['伤残赔偿项目']['伤残赔偿金'] != '') {
+				var tmp = content['graph']['伤残赔偿项目']['伤残赔偿金'].replace(',','');
+				reparations.push({
+	                value: parseFloat(tmp.substring(0, tmp.length - 1)),
+	                name: '伤残赔偿金'
+	            });
+			}
+			if (content['graph']['伤残赔偿项目']['残疾辅助器具'] != '') {
+				var tmp = content['graph']['伤残赔偿项目']['残疾辅助器具'].replace(',','');
+				reparations.push({
+	                value: parseFloat(tmp.substring(0, tmp.length - 1)),
+	                name: '残疾辅助器具'
+	            });
+			}
+			if (content['graph']['伤残赔偿项目']['精神损害抚慰金'] != '') {
+				var tmp = content['graph']['伤残赔偿项目']['精神损害抚慰金'].replace(',','');
+				reparations.push({
+	                value: parseFloat(tmp.substring(0, tmp.length - 1)),
+	                name: '精神损害抚慰金'
+	            });
+			}
+		}
+		if (content['graph']['其它赔偿']['车损'] != '') {
+			var tmp = content['graph']['其它赔偿']['车损'].replace(',','');
+			reparations.push({
+                value: parseFloat(tmp.substring(0, tmp.length - 1)),
+                name: '车损'
+            });
+		}
+		if (content['graph']['其它赔偿']['物损'] != '') {
+			var tmp = content['graph']['其它赔偿']['物损'].replace(',','');
+			reparations.push({
+                value: parseFloat(tmp.substring(0, tmp.length - 1)),
+                name: '物损'
+            });
+		}
+		if (content['graph']['其它赔偿']['律师费'] != '') {
+			var tmp = content['graph']['其它赔偿']['律师费'].replace(',','');
+			reparations.push({
+                value: parseFloat(tmp.substring(0, tmp.length - 1)),
+                name: '律师费'
+            });
+		}
+		if (content['graph']['其它赔偿']['鉴定费'] != '') {
+			var tmp = content['graph']['其它赔偿']['鉴定费'].replace(',','');
+			reparations.push({
+                value: parseFloat(tmp.substring(0, tmp.length - 1)),
+                name: '鉴定费'
+            });
+		}
+
+		var plot1 = echarts.init(document.getElementById('plot1'), 'macarons');
+	    var option = {
+	        title: {
+	            text: '赔偿汇总',
+	            x: 'center'
+	        },
+	        tooltip: {
+	            trigger: 'item',
+	            formatter: "{a} <br/>{b} : {c} ({d}%)"
+	        },
+	        series: [{
+	            name: '文本数据统计',
+	            type: 'pie',
+	            radius: '60%',
+	            center: ['50%', '55%'],
+	            data: reparations,
+	            itemStyle: {
+	                emphasis: {
+	                    shadowBlur: 10,
+	                    shadowOffsetX: 0,
+	                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+	                }
+	            }
+	        }]
+	    };
+	    plot1.setOption(option);
+
+	    var responsibilities = [];
+	    if (content['graph']['总金额及被告赔偿金额']['交强险保险公司'] != '') {
+			var tmp = content['graph']['总金额及被告赔偿金额']['交强险保险公司'].replace(',','');
+			responsibilities.push({
+                value: parseFloat(tmp.substring(0, tmp.length - 1)),
+                name: '交强险保险公司'
+            });
+		}
+		if (content['graph']['总金额及被告赔偿金额']['商业险保险公司'] != '') {
+			var tmp = content['graph']['总金额及被告赔偿金额']['商业险保险公司'].replace(',','');
+			responsibilities.push({
+                value: parseFloat(tmp.substring(0, tmp.length - 1)),
+                name: '商业险保险公司'
+            });
+		}
+		if (content['graph']['总金额及被告赔偿金额']['其他被告'] != '') {
+			var tmp = content['graph']['总金额及被告赔偿金额']['其他被告'].replace(',','');
+			responsibilities.push({
+                value: parseFloat(tmp.substring(0, tmp.length - 1)),
+                name: '被告'
+            });
+		}
+
+	    var plot2 = echarts.init(document.getElementById('plot2'), 'macarons');
+	    var option = {
+	        title: {
+	            text: '赔偿承担',
+	            x: 'center'
+	        },
+	        tooltip: {
+	            trigger: 'item',
+	            formatter: "{a} <br/>{b} : {c} ({d}%)"
+	        },
+	        series: [{
+	            name: '文本数据统计',
+	            type: 'pie',
+	            radius: '60%',
+	            center: ['50%', '55%'],
+	            data: responsibilities,
+	            itemStyle: {
+	                emphasis: {
+	                    shadowBlur: 10,
+	                    shadowOffsetX: 0,
+	                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+	                }
+	            }
+	        }]
+	    };
+	    plot2.setOption(option);
+	}
+
+	$('#source span:first-child').click(function(event) {
+		$('#source span:last-child').removeClass('active');
+		$(this).addClass('active');
+		source = 0;
+		fill_in_content(record);
+	});
+
+	$('#source span:last-child').click(function(event) {
+		$('#source span:first-child').removeClass('active');
+		$(this).addClass('active');
+		source = 1;
+		fill_in_content(paper);
+	});
+
+	$('#bug>span').click(function(event) {
+		$.ajax({
+			url: '{:U("Case/note")}',
+			type: 'POST',
+			dataType: 'json',
+			data: {
+				note: $('#bug textarea').val(),
+				title: $('#search input').val(),
+				category: function(){
+					if (source == 0) {
+						return '庭审笔录';
+					}
+					else {
+						return '法律文书';
+					}
+				}
+			},
+		})
+		.done(function(data) {
+		})
+		.fail(function() {
+		})
+		.always(function() {
+		});
+		
+		$('#bug p').animate({
+			opacity: 1,
+		}, 500, function() {
+			setTimeout(function(){
+				$('#bug p').animate({opacity: 0}, 500);
+			}, 1000);
+		});
+	});
+});
+</script>

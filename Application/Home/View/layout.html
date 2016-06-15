@@ -36,7 +36,44 @@
     header {
         background-color: #252732;
         padding: 35px;
+        position: relative;
     }
+
+    header #nav {
+        position: absolute;
+        right: 50px;
+        bottom: 18px;
+    }
+
+    header #nav a {
+        padding: 20px 12px;
+        display: inline-block;
+        text-decoration: none;
+        font-size: 16px;
+        color: #999;
+        transition: color .3s;
+        -o-transition: color .3s;
+        -ms-transition: color .3s;
+        -moz-transition: color .3s;
+        -webkit-transition: color .3s;
+    }
+    header #nav a:hover, header #nav a.active {
+        color: #fff;
+    }
+
+    footer a {
+        color: #999;
+        margin-left: 5px;
+        transition: color .3s;
+        -o-transition: color .3s;
+        -ms-transition: color .3s;
+        -moz-transition: color .3s;
+        -webkit-transition: color .3s;
+    }
+
+    footer a:hover {
+        color: #fff;
+    } 
 
     #main {
         padding: 40px 60px;
@@ -55,12 +92,16 @@
 <body>
     <header>
         <h3 style="margin:0;color:white;"><span class="fa fa-fw fa-gavel" style="font-size:20px;margin-right:16px;position:relative;top:-3px"></span>道交案件大数据</h3>
+        <div id="nav">
+            <a href="{:U('Index/index')}" id="nav1">数据概览</a>
+            <a href="{:U('Case/index')}" id="nav2">案例透视</a>
+        </div>
     </header>
     <div id="main">
         {__CONTENT__}
     </div>
     <footer class="well" style="margin-bottom:0;padding:20px;border-radius:0;margin-top:0px;background-color:#252732;color:white;border:none;">
-        <p class="text-center" style="margin-bottom:0;font-size:14px;"><span class="fa fa-fw fa-copyright"></span> Copyright 2016 by OMNILab</p>
+        <p class="text-center" style="margin-bottom:0;font-size:14px;"><span class="fa fa-fw fa-copyright"></span> Copyright 2016 by <a href="http://omnilab.sjtu.edu.cn" target="_blank">OMNILab</a></p>
     </footer>
 </body>
 

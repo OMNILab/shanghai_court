@@ -25,27 +25,31 @@
 
 #plot31 {
     width: 100%;
-    height: 400px;
+    height: 300px;
     margin-bottom: 30px;
-    text-align: center;
+    text-align: left;
 }
 
 #plot31 circle.active {
     fill: #888;
+    opacity: 1;
 }
 
 #plot31 circle#compare {
     fill: #0b93e3;
+    opacity: 1;
 }
 
 #plot31 circle#selected {
     fill: rgb(244, 64, 117);
+    opacity: 1
 }
 
 #plot32 {
     width: 100%;
     height: 400px;
     margin-bottom: 30px;
+    text-align: right;
 }
 
 #plot32 rect.corr:hover {
@@ -131,14 +135,32 @@
     height: 500px;
     border: 1px solid #B4B5BB;
     border-radius: 5px;
-    padding: 20px;
+    padding: 30px;
+    position: relative;
+}
+
+#plot51 #plot51_plot {
+    width: 100%;
+    height: 440px;
+}
+
+#plot51 h4 {
+    margin-top: 0px;
+    font-size: 24px;
+    color: #5A6779;
+    border-left: 4px solid #F44075;
+    padding-left: 10px;
+    margin-bottom: 25px;
+    z-index: 999;
+    position: absolute;
+    top: 34px;
 }
 
 #fees {
     position: absolute;
-    bottom: 1px;
-    margin-left: 1px;
-    margin-right: 16px;
+    bottom: 0;
+    left: 0;
+    width: 100%;
     padding: 10px;
     background-color: rgba(50,50,50,0.7);
     font-size: 12px;
@@ -157,7 +179,7 @@
 }
 
 #plot52 h4 {
-    margin-top: 0;
+    margin-top: 5px;
     font-size: 24px;
     color: #fff;
     border-left: 4px solid #0b93e3;
@@ -204,19 +226,15 @@
 </div>
 <div id="plot2"></div>
 <div class="row">
-    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-        <div id="plot31">
-            <svg width="500px" height="400px">
+    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-7">
+        <div id="plot32">
+            <svg width="500px" height="400px" style="position:relative;left:60px;">
                 <g></g>
             </svg>
         </div>
     </div>
-    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-        <div id="plot32">
-            <svg width="500px" height="400px">
-                <g></g>
-            </svg>
-        </div>
+    <div class="col-xs-12 col-sm-5 col-md-5 col-lg-5">
+        <h4 style="font-size:24px;text-align:left;margin-top:120px;">费用相关矩阵</h4>
     </div>
 </div>
 <div class="row">
@@ -268,10 +286,25 @@
     </div>
 </div>
 <div class="row">
+    <div class="col-xs-12 col-sm-5 col-md-5 col-lg-5">
+        <h4 style="font-size:24px;text-align:right;margin-top:100px;margin-right:20px;">案例相似云图</h4>
+    </div>
+    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-7">
+        <div id="plot31">
+            <svg width="500px" height="300px">
+                <g></g>
+            </svg>
+        </div>
+    </div>
+</div>
+<div class="row">
     <div class="col-xs-12 col-sm-7 col-md-7 col-lg-7">
         <div id="plot51">
+            <h4>案件图谱</h4>
+            <div id="plot51_plot">
+            </div>
+            <div id="fees"></div>
         </div>
-        <div id="fees"></div>
     </div>
     <div class="col-xs-12 col-sm-5 col-md-5 col-lg-5">
         <div id="plot52">
@@ -282,6 +315,8 @@
 </div>
 <script>
 $(document).ready(function() {
+    $('#nav1').addClass('active');
+
     var plot11 = echarts.init(document.getElementById('plot11'), 'macarons');
     var option = {
         title: {
@@ -425,7 +460,7 @@ $(document).ready(function() {
     plot2.setOption(option);
 
     var plot31_width = 500;
-    var plot31_height = 400;
+    var plot31_height = 300;
     $.ajax({
         url: '{:U("Index/points")}',
         type: 'POST',
@@ -435,10 +470,10 @@ $(document).ready(function() {
     .done(function(data) {
         d3.select("#plot31 svg g").selectAll('circle').data(data).enter().append('circle').attr({
             cx: function(d){
-                return d.x * (plot31_width - 60) + 30 - 3;
+                return d.x * (plot31_width - 40) + 20 - 3;
             },
             cy: function(d){
-                return (1 - d.y) * (plot31_height - 60) + 30 - 3;
+                return (1 - d.y) * (plot31_height - 40) + 20 - 3;
             },
             r: 3,
             fill: '#ddd',
@@ -452,7 +487,7 @@ $(document).ready(function() {
                 else {
                     return '';
                 }
-            }
+            },
         });
     })
     .fail(function() {
@@ -615,7 +650,7 @@ $(document).ready(function() {
                     'echarts/chart/force'
                 ],
                 function(ec) {
-                    var plot51 = ec.init(document.getElementById('plot51'), 'shine');
+                    var plot51 = ec.init(document.getElementById('plot51_plot'), 'shine');
                     data['toolbox'] = {};
                     data['title'] = {};
                     plot51.setOption(data);
