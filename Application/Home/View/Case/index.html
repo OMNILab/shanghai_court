@@ -53,7 +53,7 @@
 }
 #content {
 	margin-top: 20px;
-	display: none;
+	/*display: none;*/
 }
 #content h5.title {
     color: #5A6779;
@@ -187,7 +187,7 @@
 }
 </style>
 <div id="search">
-	<input type="text" class="form-control">
+	<input type="text" class="form-control" placeholder="输入年份或案件编号进行筛选">
 	<!-- <span class="btn" id="random"><span class="fa fa-fw fa-random"></span></span> -->
 	<div id="results"></div>
 </div>
@@ -521,18 +521,18 @@ $(document).ready(function() {
 		$('#total-reparation p[name="损失总金额"] span').text(content['graph']['总金额及被告赔偿金额']['损失总金额']);
 
 		$('#content').show();
-		var h1 = $('#main-reparation').height();
-		var h2 = $('#other-reparation').height();
-		var h3 = $('#total-reparation').height();
-		if (h1 < h2) {
-			h1 = h2;
-		}
-		if (h1 < h3) {
-			h1 = h3;
-		}
-		$('#main-reparation').height(h1);
-		$('#other-reparation').height(h1);
-		$('#total-reparation').height(h1);
+		// var h1 = $('#main-reparation').height();
+		// var h2 = $('#other-reparation').height();
+		// var h3 = $('#total-reparation').height();
+		// if (h1 < h2) {
+		// 	h1 = h2;
+		// }
+		// if (h1 < h3) {
+		// 	h1 = h3;
+		// }
+		// $('#main-reparation').height(h1);
+		// $('#other-reparation').height(h1);
+		// $('#total-reparation').height(h1);
 
 		var reparations = [];
 		if (content['graph']['死亡还是伤残'] == '死亡') {
