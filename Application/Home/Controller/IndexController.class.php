@@ -48,7 +48,7 @@ class IndexController extends Controller {
         $map['id'] = array('neq', I('id'));
         $case = M('knowledge')->where(array('id'=>I('id')))->find();
         $cases = M('knowledge')->where($map)->select();
-        $tmp = [];
+        $tmp = array();
         for ($i = 0; $i < count($cases); $i++) { 
             $derX = floatval($cases[$i]['x']) - floatval($case['x']);
             $derY = floatval($cases[$i]['y']) - floatval($case['y']);
