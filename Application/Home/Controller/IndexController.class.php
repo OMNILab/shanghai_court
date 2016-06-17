@@ -53,7 +53,7 @@ class IndexController extends Controller {
             $derX = floatval($cases[$i]['x']) - floatval($case['x']);
             $derY = floatval($cases[$i]['y']) - floatval($case['y']);
             $dist = sqrt($derX * $derX + $derY * $derY);
-            array_push($tmp, [$dist, $cases[$i]]);
+            array_push($tmp, array($dist, $cases[$i]));
         }
 
         usort($tmp, function($a, $b) {
